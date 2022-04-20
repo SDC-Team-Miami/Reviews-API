@@ -1,15 +1,16 @@
 import express from 'express';
 import morgan from 'morgan';
 import sequelize from './db';
-import 'dotenv/config'
 
 const app = express();
 
-const getTables = "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';"
-
 app.use(morgan('dev'));
-app.get('/', (req: express.Request, res: express.Response) => {
-    sequelize.query(getTables)
+
+
+app.get('/reviews', (req: express.Request, res: express.Response) => {
+    const getReviews = `SELECT * FROM reviews LIMIT 10 OFFSET 10;`;
+
+    sequelize.query(getReviews)
         .then((result) => {
             res.send(result);
         })
