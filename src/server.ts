@@ -1,14 +1,13 @@
-import express, { Request, Response } from "express";
+import "dotenv/config";
+import express from "express";
 import morgan from "morgan";
-// import db from './db';
+
+import router from "./routes";
 
 const app = express();
 
 app.use(morgan("dev"));
-
-app.get("/reviews", (req: Request, res: Response) => {
-  res.send("hello");
-});
+app.use(router);
 
 app.listen(8000, () => {
   console.log("listening on 8000");
