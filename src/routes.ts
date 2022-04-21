@@ -1,10 +1,15 @@
 import { Router, Request, Response } from "express";
+import { Review } from "./db";
 
 const router = Router();
 
 // routes
 router.get("/reviews", (req: Request, res: Response) => {
-  res.send("/reviews");
+  Review.findAll({
+    where: {
+      product_id: 100001,
+    },
+  }).then((data) => res.send(data));
 });
 router.get("/reviews/meta", (req: Request, res: Response) => {
   res.send("/reviews/meta");
