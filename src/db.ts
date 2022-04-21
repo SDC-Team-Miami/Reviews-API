@@ -1,4 +1,4 @@
-import { Sequelize } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
 
 const sequelize = new Sequelize(`${process.env.URI}`);
 

@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 
 const router = Router();
 
+// routes
 router.get("/reviews", (req: Request, res: Response) => {
   res.send("/reviews");
 });
