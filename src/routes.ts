@@ -11,9 +11,24 @@ router.get("/reviews", (req: Request, res: Response) => {
     },
   }).then((data) => res.send(data));
 });
-router.get("/reviews/meta", (req: Request, res: Response) => {
-  res.send("/reviews/meta");
-});
+
+// router.get("/reviews/meta", (req: Request, res: Response) => {
+//   Review.findAll({
+//     attributes: ["rating"],
+//     where: {
+//       product_id: 100011,
+//     },
+//   })
+//     .then((data) => {
+//       const ratings: Object = {};
+//       data.forEach((rating: Object) => {
+//         ratings[rating.rating] = 1;
+//       });
+//       res.send(ratings);
+//     })
+//     .catch((err) => console.log(err));
+// });
+
 router.post("/reviews/", (req: Request, res: Response) => {
   res.status(201);
 });
