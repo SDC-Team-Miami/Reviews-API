@@ -9,6 +9,6 @@ const app = express();
 app.use(morgan("dev"));
 app.use(router);
 
-app.listen(8000, () => {
-  console.log("listening on 8000");
+app.listen(process.env.PORT, () => {
+  console.log(`listening on ${process.env.PORT}`);
 });
