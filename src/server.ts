@@ -1,21 +1,20 @@
-import express from 'express';
-import morgan from 'morgan';
-import sequelize from './db';
-import 'dotenv/config'
+// imports from npm packages
+import "dotenv/config";
+import express from "express";
+import morgan from "morgan";
+
+// import router
+import router from "./routes";
 
 const app = express();
 
-const getTables = "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';"
+// middleware
+app.use(morgan("dev"));
 
-app.use(morgan('dev'));
-app.get('/', (req: express.Request, res: express.Response) => {
-    sequelize.query(getTables)
-        .then((result) => {
-            res.send(result);
-        })
-        .catch(err => console.log(err));
-})
+// use routes
+app.use(router);
 
-app.listen(8000, () => {
-    console.log('listening on 8000');
-})
+//  start server
+app.listen(process.env.PORT, () => {
+  console.log(`listening on ${process.env.PORT}`);
+});

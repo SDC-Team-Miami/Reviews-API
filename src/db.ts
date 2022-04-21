@@ -1,5 +1,5 @@
-import { Sequelize } from 'sequelize';
+import { Sequelize } from "sequelize-typescript";
 
-const sequelize = new Sequelize("postgres://matt:306366@localhost:5432/sdc");
+const sequelize = new Sequelize(`${process.env.URI}`);
 
 export default sequelize;
