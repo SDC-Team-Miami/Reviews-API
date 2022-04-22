@@ -47,8 +47,12 @@ router.put("/reviews/helpful", (req: Request, res: Response) => {
     .then(() => res.send("hello"))
     .catch((err) => console.log(err));
 });
-router.put("/reviews/:reviewId/report", (req: Request, res: Response) => {
-  res.status(204);
+
+router.put("/reviews/report", (req: Request, res: Response) => {
+  AppDataSource.manager
+    .update(Review, 1702658, { reported: true })
+    .then(() => res.send("hello"))
+    .catch((err) => console.log(err));
 });
 
 export default router;
