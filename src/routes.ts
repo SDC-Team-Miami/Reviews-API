@@ -13,9 +13,14 @@ interface RatingsInt {
 router.get("/reviews", (req: Request, res: Response) => {
   Review.findAll({
     where: {
-      product_id: 100001,
+      product_id: 294739,
     },
-  }).then((data) => res.send(data));
+  })
+    .then((data) => {
+      console.log(data[0] instanceof Review);
+      res.send(data);
+    })
+    .catch((err) => console.log(err));
 });
 
 router.get("/reviews/meta", (req: Request, res: Response) => {
@@ -29,32 +34,7 @@ router.get("/reviews/meta", (req: Request, res: Response) => {
         return acc;
       }, {}),
     });
-    // res.send(data);
   });
-  // Review.findAll({
-  //   attributes: ["rating"],
-  //   where: {
-  //     product_id: 100011,
-  //   },
-  // })
-  //   .then((data) => {
-  //     res.send(
-  //       data
-  //         .map((rating) => rating.get("rating"))
-  //         .reduce((acc: RatingsInt, rating) => {
-  //           if (rating !== undefined) {
-  //             if (acc[rating as keyof typeof acc] === undefined) {
-  //               acc[rating as keyof typeof acc] = 1;
-  //             } else {
-  //               acc[rating as keyof typeof acc] = acc[rating as keyof typeof acc] + 1;
-  //             }
-  //           }
-  //           return acc;
-  //         }, {})
-  //     );
-  // res.send(data);
-  // })
-  // .catch((err) => console.log(err));
 });
 
 router.post("/reviews/", (req: Request, res: Response) => {
