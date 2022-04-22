@@ -45,6 +45,17 @@ router.post("/reviews/", (req: Request, res: Response) => {
   res.status(201);
 });
 
+router.put("/reviews/:review_id/helpful", (req: Request, res: Response) => {
+  if (req.params.review_id === undefined) {
+    return res.sendStatus(404);
+  }
+  const reviewId = Number(req.params.review_id);
+  return AppDataSource.manager
+    .increment(Review, { id: reviewId }, "helpfulness", 1)
+    .then(() => res.sendStatus(204))
+    .catch((err) => console.log(err));
+});
+
 router.put("/reviews/helpful", (req: Request, res: Response) => {
   if (req.query.review_id === undefined) {
     return res.sendStatus(404);
