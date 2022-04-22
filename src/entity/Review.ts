@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm";
 
 @Entity()
 class Review {
+  @Index()
   @PrimaryGeneratedColumn()
   id: number;
 
