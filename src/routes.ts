@@ -93,10 +93,25 @@ router.put("/reviews/helpful", (req: Request, res: Response) => {
     .catch((err) => console.log(err));
 });
 
+router.put("/reviews/:review_id/report", (req: Request, res: Response) => {
+  if (req.params.review_id === undefined) {
+    return res.sendStatus(404);
+  }
+  const reviewId = Number(req.params.review_id);
+  return AppDataSource.manager
+    .update(Review, reviewId, { reported: true })
+    .then(() => res.sendStatus(204))
+    .catch((err) => console.log(err));
+});
+
 router.put("/reviews/report", (req: Request, res: Response) => {
-  AppDataSource.manager
-    .update(Review, 1702658, { reported: true })
-    .then(() => res.send("hello"))
+  if (req.query.review_id === undefined) {
+    return res.sendStatus(404);
+  }
+  const reviewId = Number(req.query.review_id);
+  return AppDataSource.manager
+    .update(Review, reviewId, { reported: true })
+    .then(() => res.sendStatus(204))
     .catch((err) => console.log(err));
 });
 
