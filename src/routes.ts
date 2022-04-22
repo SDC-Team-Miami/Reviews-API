@@ -14,12 +14,12 @@ router.get("/reviews", (req: Request, res: Response) => {
       res.send(data);
     });
 });
-// add query params
+
 router.get("/reviews/meta", (req: Request, res: Response) => {
   if (req.query.product_id === undefined) {
     return res.sendStatus(404);
   }
-  const productId: number = Number(req.query.product_id);
+  const productId = Number(req.query.product_id);
   return AppDataSource.manager
     .find(Review, {
       where: {
@@ -44,11 +44,15 @@ router.get("/reviews/meta", (req: Request, res: Response) => {
 router.post("/reviews/", (req: Request, res: Response) => {
   res.status(201);
 });
-// add query param for review id
+
 router.put("/reviews/helpful", (req: Request, res: Response) => {
-  AppDataSource.manager
-    .increment(Review, { id: 1702658 }, "helpfulness", 1)
-    .then(() => res.send("hello"))
+  if (req.query.review_id === undefined) {
+    return res.sendStatus(404);
+  }
+  const reviewId = Number(req.query.review_id);
+  return AppDataSource.manager
+    .increment(Review, { id: reviewId }, "helpfulness", 1)
+    .then(() => res.sendStatus(204))
     .catch((err) => console.log(err));
 });
 
