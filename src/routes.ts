@@ -15,16 +15,20 @@ router.get("/reviews", (req: Request, res: Response) => {
     });
 });
 // add query params
-router.get("/reviews/meta", (req: Request, res: Response) =>
-  AppDataSource.manager
+router.get("/reviews/meta", (req: Request, res: Response) => {
+  if (req.query.product_id === undefined) {
+    return res.sendStatus(404);
+  }
+  const productId: number = Number(req.query.product_id);
+  return AppDataSource.manager
     .find(Review, {
       where: {
-        product_id: 100011,
+        product_id: productId,
       },
     })
     .then((data) => {
       const ratings: number[] = data.map((review) => review.rating);
-      res.send(
+      res.status(200).send(
         ratings.reduce((acc: Record<number, number>, current) => {
           if (acc[current] === undefined) {
             acc[current] = 1;
@@ -34,8 +38,8 @@ router.get("/reviews/meta", (req: Request, res: Response) =>
           return acc;
         }, {})
       );
-    })
-);
+    });
+});
 
 router.post("/reviews/", (req: Request, res: Response) => {
   res.status(201);
