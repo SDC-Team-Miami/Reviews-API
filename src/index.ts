@@ -1,24 +1,5 @@
-// imports from npm packages
-import "reflect-metadata";
-import "dotenv/config";
-import express from "express";
-import morgan from "morgan";
-import cors from "cors";
-
-// import router
-import router from "./routes";
-
 import AppDataSource from "./data-source";
 import User from "./entity/User";
-
-const app = express();
-
-// middleware
-app.use(morgan("dev"));
-app.use(cors());
-
-// use routes
-app.use(router);
 
 AppDataSource.initialize()
   .then(async () => {
@@ -37,8 +18,3 @@ AppDataSource.initialize()
     console.log("Here you can setup and run express / fastify / any other framework.");
   })
   .catch((error) => console.log(error));
-
-//  start server
-app.listen(process.env.PORT, () => {
-  console.log(`listening on ${process.env.PORT}`);
-});
