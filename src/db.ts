@@ -1,6 +1,6 @@
 import { Sequelize, DataType } from "sequelize-typescript";
 
-const sequelize = new Sequelize(`${process.env.URI}`);
+export const sequelize = new Sequelize(`${process.env.URI}`);
 
 export const Review = sequelize.define(
   "review",
@@ -50,4 +50,4 @@ export const Review = sequelize.define(
   }
 );
 
-export default sequelize;
+// export default sequelize;

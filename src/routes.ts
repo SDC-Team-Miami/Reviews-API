@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { Review } from "./db";
+import { Review, sequelize } from "./db";
 
 const router = Router();
 interface RatingsInt {
@@ -19,30 +19,42 @@ router.get("/reviews", (req: Request, res: Response) => {
 });
 
 router.get("/reviews/meta", (req: Request, res: Response) => {
-  Review.findAll({
-    attributes: ["rating"],
-    where: {
-      product_id: 100011,
-    },
-  })
-    .then((data) => {
-      res.send(
-        data
-          .map((rating) => rating.get("rating"))
-          .reduce((acc: RatingsInt, rating) => {
-            if (rating !== undefined) {
-              if (acc[rating as keyof typeof acc] === undefined) {
-                acc[rating as keyof typeof acc] = 1;
-              } else {
-                acc[rating as keyof typeof acc] = acc[rating as keyof typeof acc] + 1;
-              }
-            }
-            return acc;
-          }, {})
-      );
-      // res.send(data);
-    })
-    .catch((err) => console.log(err));
+  sequelize.query("SELECT review.rating FROM review WHERE product_id = 100011;").then((data) => {
+    res.send({
+      ratings: data[0].reduce((acc: any, rating: any) => {
+        if (acc[rating.rating] === undefined) {
+          return { ...acc, [rating.rating]: 1 };
+        }
+        acc[rating.rating] += 1;
+        return acc;
+      }, {}),
+    });
+    // res.send(data);
+  });
+  // Review.findAll({
+  //   attributes: ["rating"],
+  //   where: {
+  //     product_id: 100011,
+  //   },
+  // })
+  //   .then((data) => {
+  //     res.send(
+  //       data
+  //         .map((rating) => rating.get("rating"))
+  //         .reduce((acc: RatingsInt, rating) => {
+  //           if (rating !== undefined) {
+  //             if (acc[rating as keyof typeof acc] === undefined) {
+  //               acc[rating as keyof typeof acc] = 1;
+  //             } else {
+  //               acc[rating as keyof typeof acc] = acc[rating as keyof typeof acc] + 1;
+  //             }
+  //           }
+  //           return acc;
+  //         }, {})
+  //     );
+  // res.send(data);
+  // })
+  // .catch((err) => console.log(err));
 });
 
 router.post("/reviews/", (req: Request, res: Response) => {
