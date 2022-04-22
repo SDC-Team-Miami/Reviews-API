@@ -1,10 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm";
 
 @Entity()
 class Review {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index()
   @Column()
   product_id: number;
 
