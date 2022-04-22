@@ -3,7 +3,7 @@ import AppDataSource from "./data-source";
 import Review from "./entity/Review";
 
 const router = Router();
-const productId = 100011;
+
 // routes
 router.get("/reviews", (req: Request, res: Response) => {
   AppDataSource.manager
@@ -23,7 +23,17 @@ router.get("/reviews/meta", (req: Request, res: Response) =>
       },
     })
     .then((data) => {
-      res.send(data);
+      const ratings: number[] = data.map((review) => review.rating);
+      res.send(
+        ratings.reduce((acc: Record<number, number>, current) => {
+          if (acc[current] === undefined) {
+            acc[current] = 1;
+          } else {
+            acc[current] += 1;
+          }
+          return acc;
+        }, {})
+      );
     })
 );
 
