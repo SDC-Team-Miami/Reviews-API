@@ -14,7 +14,7 @@ router.get("/reviews", (req: Request, res: Response) => {
       res.send(data);
     });
 });
-
+// add query params
 router.get("/reviews/meta", (req: Request, res: Response) =>
   AppDataSource.manager
     .find(Review, {
@@ -40,8 +40,12 @@ router.get("/reviews/meta", (req: Request, res: Response) =>
 router.post("/reviews/", (req: Request, res: Response) => {
   res.status(201);
 });
-router.put("/reviews/:reviewId/helpful", (req: Request, res: Response) => {
-  res.status(204);
+// add query param for review id
+router.put("/reviews/helpful", (req: Request, res: Response) => {
+  AppDataSource.manager
+    .increment(Review, { id: 1702658 }, "helpfulness", 1)
+    .then(() => res.send("hello"))
+    .catch((err) => console.log(err));
 });
 router.put("/reviews/:reviewId/report", (req: Request, res: Response) => {
   res.status(204);
