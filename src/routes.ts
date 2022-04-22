@@ -15,6 +15,32 @@ router.get("/reviews", (req: Request, res: Response) => {
     });
 });
 
+router.get("/reviews/:product_id/meta", (req: Request, res: Response) => {
+  if (req.params.product_id === undefined) {
+    return res.sendStatus(404);
+  }
+  const productId = Number(req.params.product_id);
+  return AppDataSource.manager
+    .find(Review, {
+      where: {
+        product_id: productId,
+      },
+    })
+    .then((data) => {
+      const ratings: number[] = data.map((review) => review.rating);
+      res.status(200).send(
+        ratings.reduce((acc: Record<number, number>, current) => {
+          if (acc[current] === undefined) {
+            acc[current] = 1;
+          } else {
+            acc[current] += 1;
+          }
+          return acc;
+        }, {})
+      );
+    });
+});
+
 router.get("/reviews/meta", (req: Request, res: Response) => {
   if (req.query.product_id === undefined) {
     return res.sendStatus(404);
