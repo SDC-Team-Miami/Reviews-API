@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, Index, Timestamp } from "typeorm";
 
 @Entity()
 class Review {
   @Index("review_id_index")
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("increment")
   id: number;
 
   @Index("review_product_id_index")
@@ -13,7 +13,9 @@ class Review {
   @Column()
   rating: number;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   date: string;
 
   @Column()
@@ -41,6 +43,9 @@ class Review {
 
   @Column()
   helpfulness: number;
+
+  @Column("timestamp")
+  datetz: Timestamp;
 }
 
 export default Review;
