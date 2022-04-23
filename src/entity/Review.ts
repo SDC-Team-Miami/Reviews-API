@@ -2,30 +2,24 @@ import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm";
 
 @Entity()
 class Review {
-  @Index()
+  @Index("review_id_index")
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Index()
+  @Index("review_product_id_index")
   @Column()
   product_id: number;
 
   @Column()
   rating: number;
 
-  @Column({
-    nullable: true,
-  })
+  @Column()
   date: string;
 
-  @Column({
-    nullable: true,
-  })
+  @Column()
   summary: string;
 
-  @Column({
-    nullable: true,
-  })
+  @Column()
   body: string;
 
   @Column()
@@ -34,14 +28,10 @@ class Review {
   @Column()
   reported: boolean;
 
-  @Column({
-    nullable: true,
-  })
+  @Column()
   reviewer_name: string;
 
-  @Column({
-    nullable: true,
-  })
+  @Column()
   reviewer_email: string;
 
   @Column({
