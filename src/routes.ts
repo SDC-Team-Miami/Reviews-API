@@ -8,13 +8,77 @@ const router = Router();
 
 const reviewRepo = AppDataSource.getRepository(Review);
 const photoRepo = AppDataSource.getRepository(Photo);
-const characteristicReviewsRepo = AppDataSource.getRepository(CharacteristicReview);
+const characteristicReviewRepo = AppDataSource.getRepository(CharacteristicReview);
+
+type Ratings = Record<string, number>;
+
+type Recommended = {
+  [bool in "true" | "false"]: number;
+};
+
+type Characteristic = {
+  id: number;
+  value: string;
+};
+
+type Characteristics = {
+  Fit?: Characteristic;
+  Comfort?: Characteristic;
+  Quality?: Characteristic;
+  Size?: Characteristic;
+  Length?: Characteristic;
+  Width?: Characteristic;
+};
+
+interface Metadata {
+  ratings: Ratings;
+  recommended: Recommended;
+  characteristics: Characteristics;
+}
 
 router.get("/reviews", (req: Request, res: Response) => {
   if (req.query.product_id === undefined) {
     return res.sendStatus(404);
   }
   const productId = Number(req.query.product_id);
+
+  return reviewRepo
+    .createQueryBuilder("review")
+    .select([
+      "review.id AS review_id",
+      "rating",
+      "summary",
+      "recommend",
+      "response",
+      "body",
+      "review.datetz AS date",
+      "reviewer_name",
+      "helpfulness",
+    ])
+    .where("review.product_id = :productId", { productId })
+    .getRawMany()
+    .then((data) =>
+      Promise.all(
+        data.map((review) =>
+          photoRepo.find({
+            select: {
+              id: true,
+              url: true,
+            },
+            where: {
+              review_id: review.review_id,
+            },
+          })
+        )
+      ).then((photos) => res.send(data.map((review, i) => ({ ...review, photos: photos[i] }))))
+    );
+});
+
+router.get("/reviews/:product_id/list", (req: Request, res: Response) => {
+  if (req.params.product_id === undefined) {
+    return res.sendStatus(404);
+  }
+  const productId = Number(req.params.product_id);
 
   return reviewRepo
     .createQueryBuilder("review")
@@ -61,16 +125,16 @@ router.get("/reviews/:product_id/meta", (req: Request, res: Response) => {
     })
     .then((data) => {
       const ratings: number[] = data.map((review) => review.rating);
-      res.status(200).send(
-        ratings.reduce((acc: Record<number, number>, current) => {
+      res.status(200).send({
+        ratings: ratings.reduce((acc: Record<number, number>, current) => {
           if (acc[current] === undefined) {
             acc[current] = 1;
           } else {
             acc[current] += 1;
           }
           return acc;
-        }, {})
-      );
+        }, {}),
+      });
     });
 });
 
@@ -79,6 +143,14 @@ router.get("/reviews/meta", (req: Request, res: Response) => {
     return res.sendStatus(404);
   }
   const productId = Number(req.query.product_id);
+  const metadata: Metadata = {
+    ratings: {},
+    recommended: {
+      true: 0,
+      false: 0,
+    },
+    characteristics: {},
+  };
   return reviewRepo
     .find({
       where: {
@@ -86,20 +158,62 @@ router.get("/reviews/meta", (req: Request, res: Response) => {
       },
     })
     .then((data) => {
-      const ratings: number[] = data.map((review) => review.rating);
-      res.status(200).send(
-        ratings.reduce((acc: Record<number, number>, current) => {
+      metadata.ratings = data
+        .map((review) => review.rating)
+        .reduce((acc: Record<number, number>, current) => {
           if (acc[current] === undefined) {
             acc[current] = 1;
           } else {
             acc[current] += 1;
           }
           return acc;
-        }, {})
-      );
+        }, {});
+      metadata.recommended = data
+        .map((review) => review.recommend.toString())
+        .reduce(
+          (acc: Recommended, current: "true" | "false") => {
+            acc[current] += 1;
+            return acc;
+          },
+          { true: 0, false: 0 }
+        );
+      return Promise.all(
+        data.map((review) =>
+          AppDataSource.manager.query(
+            `SELECT name, value, characteristic.id 
+          FROM characteristic_review
+          INNER JOIN characteristic 
+          ON characteristic.id = characteristic_id
+          WHERE review_id = ${review.id};`
+          )
+        )
+      ).then((result) => {
+        const characteristicTotals = result.reduce((acc, chars) => {
+          chars.forEach((char: { id: number; name: string; value: string }) => {
+            if (acc[char.name] === undefined) {
+              acc[char.name] = { id: char.id, value: char.value };
+            } else {
+              acc[char.name].value += char.value;
+            }
+          });
+          return acc;
+        }, {});
+        Object.keys(characteristicTotals).forEach((char) => {
+          characteristicTotals[char].value /= result.length;
+          characteristicTotals[char].value = characteristicTotals[char].value.toFixed(4);
+        });
+        metadata.characteristics = characteristicTotals;
+        res.status(200).send(metadata);
+      });
     });
 });
 /*
+
+const user = createQueryBuilder("user")
+    .innerJoin("user.photos", "photo")
+    .where("user.name = :name", { name: "Timber" })
+    .getOne()
+
 POST /reviews
 @param product_id INTEGER
 @param rating INTEGER (1-5)
@@ -148,7 +262,7 @@ router.post("/reviews/:product_id", (req: Request, res: Response) => {
         .then(() =>
           Promise.all(
             Object.keys(characteristics).map((charId) =>
-              characteristicReviewsRepo.insert({
+              characteristicReviewRepo.insert({
                 characteristic_id: Number(charId),
                 review_id: review.generatedMaps[0].id,
                 value: characteristics[charId],
