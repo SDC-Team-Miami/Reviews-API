@@ -1,51 +1,55 @@
 {
-   "name": "reviews-api",
-   "version": "1.0.0",
-   "description": "",
-   "main": "server.ts",
-   "scripts": {
-      "start": "ts-node src/index.ts",
-      "dev": "nodemon src/server.ts",
-      "build": "tsc -p .",
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "typeorm": "typeorm-ts-node-commonjs"
-   },
-   "repository": {
-      "type": "git",
-      "url": "git+https://github.com/SDC-Team-Miami/Reviews-API.git"
-   },
-   "author": "Matt Teran",
-   "license": "ISC",
-   "bugs": {
-      "url": "https://github.com/SDC-Team-Miami/Reviews-API/issues"
-   },
-   "homepage": "https://github.com/SDC-Team-Miami/Reviews-API#readme",
-   "dependencies": {
-      "@types/cors": "^2.8.12",
-      "cors": "^2.8.5",
-      "dotenv": "^16.0.0",
-      "express": "^4.17.3",
-      "morgan": "^1.10.0",
-      "pg": "^8.4.0",
-      "pg-hstore": "^2.3.4",
-      "reflect-metadata": "^0.1.13",
-      "typeorm": "0.3.6"
-   },
-   "devDependencies": {
-      "@types/express": "^4.17.13",
-      "@types/morgan": "^1.9.3",
-      "@types/node": "^16.11.10",
-      "@types/pg": "^8.6.5",
-      "@types/validator": "^13.7.2",
-      "@typescript-eslint/eslint-plugin": "^5.20.0",
-      "@typescript-eslint/parser": "^5.20.0",
-      "eslint": "^8.13.0",
-      "eslint-config-airbnb-base": "^15.0.0",
-      "eslint-config-airbnb-typescript": "^17.0.0",
-      "eslint-config-prettier": "^8.5.0",
-      "eslint-plugin-import": "^2.26.0",
-      "eslint-plugin-prettier": "^4.0.0",
-      "ts-node": "10.7.0",
-      "typescript": "4.5.2"
-   }
+  "name": "reviews-api",
+  "version": "1.0.0",
+  "description": "",
+  "private": "true",
+  "scripts": {
+    "start": "node dist/server.js",
+    "dev": "nodemon src/server.ts",
+    "build": "webpack --mode=production",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "typeorm": "typeorm-ts-node-commonjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SDC-Team-Miami/Reviews-API.git"
+  },
+  "author": "Matt Teran",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SDC-Team-Miami/Reviews-API/issues"
+  },
+  "homepage": "https://github.com/SDC-Team-Miami/Reviews-API#readme",
+  "dependencies": {
+    "@types/cors": "^2.8.12",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "morgan": "^1.10.0",
+    "pg": "^8.4.0",
+    "pg-hstore": "^2.3.4",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "0.3.6"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/morgan": "^1.9.3",
+    "@types/node": "^16.11.10",
+    "@types/pg": "^8.6.5",
+    "@types/validator": "^13.7.2",
+    "@typescript-eslint/eslint-plugin": "^5.20.0",
+    "@typescript-eslint/parser": "^5.20.0",
+    "eslint": "^8.13.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "node-polyfill-webpack-plugin": "^1.1.4",
+    "ts-loader": "^9.2.8",
+    "ts-node": "10.7.0",
+    "typescript": "4.5.2",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2"
+  }
 }

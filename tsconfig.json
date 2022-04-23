@@ -4,7 +4,7 @@
     "target": "es2016",
     "module": "commonjs",
     "moduleResolution": "node",
-    "rootDir": "./src",
+    // "rootDir": "./src",
     "outDir": "./dist",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -12,6 +12,7 @@
     "esModuleInterop": true,
     "noImplicitAny": true,
     //  "strict": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true
   }
 }
