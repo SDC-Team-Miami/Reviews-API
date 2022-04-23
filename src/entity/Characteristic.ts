@@ -2,11 +2,10 @@ import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm";
 
 @Entity()
 class Characteristic {
-  @Index()
+  @Index("characteristic_pkey")
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Index()
   @Column()
   product_id: number;
 
