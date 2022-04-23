@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm";
 
 @Entity()
-class CharacteristicReview {
+class CharacteristicReviews {
   @Index()
   @PrimaryGeneratedColumn()
   id: number;
@@ -17,4 +17,4 @@ class CharacteristicReview {
   value: number;
 }
 
-export default CharacteristicReview;
+export default CharacteristicReviews;

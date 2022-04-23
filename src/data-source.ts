@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
+import CharacteristicReview from "./entity/CharacteristicReview";
 import Photo from "./entity/Photo";
 import Review from "./entity/Review";
 
@@ -10,9 +11,9 @@ const AppDataSource = new DataSource({
   username: "matt",
   password: "306366",
   database: "sdc",
-  // synchronize: true,
+  synchronize: false,
   logging: false,
-  entities: [Photo, Review],
+  entities: [Photo, Review, CharacteristicReview],
   migrations: [],
   subscribers: [],
 });
