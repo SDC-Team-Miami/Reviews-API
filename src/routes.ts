@@ -36,11 +36,30 @@ interface Metadata {
   characteristics: Characteristics;
 }
 
+type ReviewType = {
+  review_id: string;
+  rating: string;
+  summary: string;
+  recommend: string;
+  response: string;
+  body: string;
+  date: string;
+  reviewer_name: string;
+  helpfulness: number;
+};
+
 router.get("/reviews", (req: Request, res: Response) => {
   if (req.query.product_id === undefined) {
     return res.sendStatus(404);
   }
   const productId = Number(req.query.product_id);
+
+  const results: { product: string; page: number; count: number; results: ReviewType[] } = {
+    product: productId.toString(),
+    page: Number(req.query.page) || 1,
+    count: Number(req.query.count) || 5,
+    results: [],
+  };
 
   return reviewRepo
     .createQueryBuilder("review")
@@ -70,9 +89,10 @@ router.get("/reviews", (req: Request, res: Response) => {
             },
           })
         )
-      ).then((photos) =>
-        res.send({ results: data.map((review, i) => ({ ...review, photos: photos[i] })) })
-      )
+      ).then((photos) => {
+        results.results = data.map((review, i) => ({ ...review, photos: photos[i] }));
+        res.send(results);
+      })
     );
 });
 
