@@ -10,7 +10,7 @@ const AppDataSource = new DataSource({
   username: "matt",
   password: "306366",
   database: "sdc",
-  synchronize: true,
+  // synchronize: true,
   logging: false,
   entities: [Photo, Review],
   migrations: [],
