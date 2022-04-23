@@ -1,12 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm";
 
-@Entity()
+@Entity({ name: "characteristic_review" })
 class CharacteristicReviews {
-  @Index()
+  @Index("characteristic_review_pkey")
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Index()
+  @Index("characteristic_review_review_id_index")
   @Column()
   characteristic_id: number;
 

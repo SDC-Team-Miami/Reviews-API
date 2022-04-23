@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, Index, Timestamp } from "typeor
 
 @Entity()
 class Review {
-  @Index("review_id_index")
+  @Index("review_pkey")
   @PrimaryGeneratedColumn("increment")
   id: number;
 
