@@ -271,9 +271,8 @@ router.post("/reviews/:product_id", (req: Request, res: Response) => {
       helpfulness: 0,
       datetz: new Date().toISOString().split("T")[0],
     })
-    .then((review) => {
-      console.log(review);
-      return Promise.all(
+    .then((review) =>
+      Promise.all(
         photos.map((url: string) =>
           photoRepo.insert({
             review_id: review.generatedMaps[0].id,
@@ -292,8 +291,8 @@ router.post("/reviews/:product_id", (req: Request, res: Response) => {
             )
           )
         )
-        .then(() => res.sendStatus(201));
-    });
+        .then(() => res.sendStatus(201))
+    );
   console.log(req.body);
 });
 
