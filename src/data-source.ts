@@ -13,10 +13,11 @@ const AppDataSource = new DataSource({
   password: "306366",
   database: "sdc",
   synchronize: false,
-  logging: false,
+  logging: ["query"],
   entities: [Photo, Review, CharacteristicReview, Characteristic],
   migrations: [],
   subscribers: [],
+  maxQueryExecutionTime: 50,
 });
 
 export default AppDataSource;
