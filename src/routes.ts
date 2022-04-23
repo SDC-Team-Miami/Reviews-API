@@ -1,17 +1,49 @@
 import { Router, Request, Response } from "express";
 import AppDataSource from "./data-source";
+import Photo from "./entity/Photo";
 import Review from "./entity/Review";
 
 const router = Router();
 
+const reviewRepo = AppDataSource.getRepository(Review);
+const photoRepo = AppDataSource.getRepository(Photo);
+
 router.get("/reviews", (req: Request, res: Response) => {
-  AppDataSource.manager
-    .findOneBy(Review, {
-      id: 1702658,
-    })
-    .then((data) => {
-      res.send(data);
-    });
+  if (req.query.product_id === undefined) {
+    return res.sendStatus(404);
+  }
+  const productId = Number(req.query.product_id);
+
+  return reviewRepo
+    .createQueryBuilder("review")
+    .select([
+      "review.id AS review_id",
+      "rating",
+      "summary",
+      "recommend",
+      "response",
+      "body",
+      "review.datetz AS date",
+      "reviewer_name",
+      "helpfulness",
+    ])
+    .where("review.product_id = :productId", { productId })
+    .getRawMany()
+    .then((data) =>
+      Promise.all(
+        data.map((review) =>
+          photoRepo.find({
+            select: {
+              id: true,
+              url: true,
+            },
+            where: {
+              review_id: review.review_id,
+            },
+          })
+        )
+      ).then((photos) => res.send(data.map((review, i) => ({ ...review, photos: photos[i] }))))
+    );
 });
 
 router.get("/reviews/:product_id/meta", (req: Request, res: Response) => {
@@ -19,8 +51,8 @@ router.get("/reviews/:product_id/meta", (req: Request, res: Response) => {
     return res.sendStatus(404);
   }
   const productId = Number(req.params.product_id);
-  return AppDataSource.manager
-    .find(Review, {
+  return reviewRepo
+    .find({
       where: {
         product_id: productId,
       },
@@ -45,8 +77,8 @@ router.get("/reviews/meta", (req: Request, res: Response) => {
     return res.sendStatus(404);
   }
   const productId = Number(req.query.product_id);
-  return AppDataSource.manager
-    .find(Review, {
+  return reviewRepo
+    .find({
       where: {
         product_id: productId,
       },
@@ -95,8 +127,8 @@ router.put("/reviews/:review_id/helpful", (req: Request, res: Response) => {
     return res.sendStatus(404);
   }
   const reviewId = Number(req.params.review_id);
-  return AppDataSource.manager
-    .increment(Review, { id: reviewId }, "helpfulness", 1)
+  return reviewRepo
+    .increment({ id: reviewId }, "helpfulness", 1)
     .then(() => res.sendStatus(204))
     .catch((err) => console.log(err));
 });
@@ -106,8 +138,8 @@ router.put("/reviews/helpful", (req: Request, res: Response) => {
     return res.sendStatus(404);
   }
   const reviewId = Number(req.query.review_id);
-  return AppDataSource.manager
-    .increment(Review, { id: reviewId }, "helpfulness", 1)
+  return reviewRepo
+    .increment({ id: reviewId }, "helpfulness", 1)
     .then(() => res.sendStatus(204))
     .catch((err) => console.log(err));
 });
@@ -117,8 +149,8 @@ router.put("/reviews/:review_id/report", (req: Request, res: Response) => {
     return res.sendStatus(404);
   }
   const reviewId = Number(req.params.review_id);
-  return AppDataSource.manager
-    .update(Review, reviewId, { reported: true })
+  return reviewRepo
+    .update(reviewId, { reported: true })
     .then(() => res.sendStatus(204))
     .catch((err) => console.log(err));
 });
@@ -128,8 +160,8 @@ router.put("/reviews/report", (req: Request, res: Response) => {
     return res.sendStatus(404);
   }
   const reviewId = Number(req.query.review_id);
-  return AppDataSource.manager
-    .update(Review, reviewId, { reported: true })
+  return reviewRepo
+    .update(reviewId, { reported: true })
     .then(() => res.sendStatus(204))
     .catch((err) => console.log(err));
 });
