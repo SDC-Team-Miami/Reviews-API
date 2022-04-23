@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import AppDataSource from "./data-source";
+import CharacteristicReview from "./entity/CharacteristicReview";
 import Photo from "./entity/Photo";
 import Review from "./entity/Review";
 
@@ -7,6 +8,7 @@ const router = Router();
 
 const reviewRepo = AppDataSource.getRepository(Review);
 const photoRepo = AppDataSource.getRepository(Photo);
+const characteristicReviewsRepo = AppDataSource.getRepository(CharacteristicReview);
 
 router.get("/reviews", (req: Request, res: Response) => {
   if (req.query.product_id === undefined) {
@@ -118,8 +120,45 @@ router.post("/reviews/:product_id", (req: Request, res: Response) => {
   if (req.params.product_id === undefined) {
     return res.sendStatus(404);
   }
+  const { rating, summary, body, recommend, name, email, photos, characteristics } = req.body;
+  return reviewRepo
+    .insert({
+      product_id: Number(req.params.product_id),
+      rating,
+      summary,
+      body,
+      recommend,
+      reported: false,
+      reviewer_name: name,
+      reviewer_email: email,
+      response: null,
+      helpfulness: 0,
+      datetz: new Date().toISOString().split("T")[0],
+    })
+    .then((review) => {
+      console.log(review);
+      return Promise.all(
+        photos.map((url: string) =>
+          photoRepo.insert({
+            review_id: review.generatedMaps[0].id,
+            url,
+          })
+        )
+      )
+        .then(() =>
+          Promise.all(
+            Object.keys(characteristics).map((charId) =>
+              characteristicReviewsRepo.insert({
+                characteristic_id: Number(charId),
+                review_id: review.generatedMaps[0].id,
+                value: characteristics[charId],
+              })
+            )
+          )
+        )
+        .then(() => res.sendStatus(201));
+    });
   console.log(req.body);
-  return res.sendStatus(201);
 });
 
 router.put("/reviews/:review_id/helpful", (req: Request, res: Response) => {
