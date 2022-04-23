@@ -70,7 +70,9 @@ router.get("/reviews", (req: Request, res: Response) => {
             },
           })
         )
-      ).then((photos) => res.send(data.map((review, i) => ({ ...review, photos: photos[i] }))))
+      ).then((photos) =>
+        res.send({ results: data.map((review, i) => ({ ...review, photos: photos[i] })) })
+      )
     );
 });
 
