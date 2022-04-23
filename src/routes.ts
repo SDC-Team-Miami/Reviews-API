@@ -4,7 +4,6 @@ import Review from "./entity/Review";
 
 const router = Router();
 
-// routes
 router.get("/reviews", (req: Request, res: Response) => {
   AppDataSource.manager
     .findOneBy(Review, {
@@ -66,9 +65,29 @@ router.get("/reviews/meta", (req: Request, res: Response) => {
       );
     });
 });
-
-router.post("/reviews/", (req: Request, res: Response) => {
-  res.status(201);
+/*
+POST /reviews
+@param product_id INTEGER
+@param rating INTEGER (1-5)
+@param summary TEXT
+@param body TEXT
+@param recommend BOOL
+@param name TEXT
+@param email TEXT
+@param photos [TEXT] (array of urls)
+@param characteristics OBJECT Object of keys representing characteristic_id and values representing the review value for that characteristic. { "14": 5, "15": 5 //...}
+Response: Status Code 201 CREATED
+*/
+router.post("/reviews/:product_id", (req: Request, res: Response) => {
+  // format data from req.body
+  // add date in milliseconds
+  // insert review in review table
+  // insert characteristics in characteristics_review table
+  if (req.params.product_id === undefined) {
+    return res.sendStatus(404);
+  }
+  console.log(req.body);
+  return res.sendStatus(201);
 });
 
 router.put("/reviews/:review_id/helpful", (req: Request, res: Response) => {
