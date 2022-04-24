@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index, Timestamp } from "typeorm";
 
 @Entity()
-class Review {
+export class Review {
   @Index("review_pkey")
   @PrimaryGeneratedColumn("increment")
   id: number;
@@ -47,5 +47,3 @@ class Review {
   @Column("timestamp")
   datetz: Timestamp;
 }
-
-export default Review;
