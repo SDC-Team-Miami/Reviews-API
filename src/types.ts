@@ -1,3 +1,8 @@
+export type Photo = {
+  id: number;
+  url: string;
+};
+
 export type Review = {
   review_id: string;
   rating: string;
@@ -8,6 +13,7 @@ export type Review = {
   date: string;
   reviewer_name: string;
   helpfulness: number;
+  photos: Photo[] | null;
 };
 
 export type Ratings = Record<string, number>;
