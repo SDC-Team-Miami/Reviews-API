@@ -3,7 +3,7 @@ export type Photo = {
   url: string;
 };
 
-export type Review = {
+export type ReviewType = {
   review_id: string;
   rating: string;
   summary: string;

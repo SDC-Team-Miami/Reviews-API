@@ -1,16 +1,15 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm";
 
 @Entity()
-class Characteristic {
-  @Index("characteristic_pkey")
+export class Photo {
+  @Index("photo_pkey")
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index("photo_review_id_index")
   @Column()
-  product_id: number;
+  review_id: number;
 
   @Column()
-  name: string;
+  url: string;
 }
-
-export default Characteristic;
