@@ -1,22 +1,16 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+import { getReviewMetadata, getReviews, postReview, putHelpful, putReport } from "./controllers";
 
 const router = Router();
 
-// routes
-router.get("/reviews", (req: Request, res: Response) => {
-  res.send("/reviews");
-});
-router.get("/reviews/meta", (req: Request, res: Response) => {
-  res.send("/reviews/meta");
-});
-router.post("/reviews/", (req: Request, res: Response) => {
-  res.status(201);
-});
-router.put("/reviews/:reviewId/helpful", (req: Request, res: Response) => {
-  res.status(204);
-});
-router.put("/reviews/:reviewId/report", (req: Request, res: Response) => {
-  res.status(204);
-});
+router.get("/reviews", getReviews);
+
+router.get("/reviews/meta", getReviewMetadata);
+
+router.post("/reviews/:product_id", postReview);
+
+router.put("/reviews/helpful", putHelpful);
+
+router.put("/reviews/report", putReport);
 
 export default router;
