@@ -1,53 +1,27 @@
+/* eslint-disable no-param-reassign */
 import { Request, Response } from "express";
 import AppDataSource, { characteristicReviewRepo, photoRepo, reviewRepo } from "./data-source";
+import { getReviewQuery } from "./rawQueries";
 import { Metadata, Recommended, Review } from "./types";
 
 export const getReviews = (req: Request, res: Response) => {
-  if (req.query.product_id === undefined) {
-    return res.sendStatus(404);
-  }
-  const productId = Number(req.query.product_id);
+  if (req.query.product_id === undefined) return res.sendStatus(404);
 
   const results: { product: string; page: number; count: number; results: Review[] } = {
-    product: productId.toString(),
+    product: req.query.product_id.toString(),
     page: Number(req.query.page) || 1,
     count: Number(req.query.count) || 5,
     results: [],
   };
 
-  return reviewRepo
-    .createQueryBuilder("review")
-    .select([
-      "review.id AS review_id",
-      "rating",
-      "summary",
-      "recommend",
-      "response",
-      "body",
-      "review.datetz AS date",
-      "reviewer_name",
-      "helpfulness",
-    ])
-    .where("review.product_id = :productId", { productId })
-    .getRawMany()
-    .then((data) =>
-      Promise.all(
-        data.map((review) =>
-          photoRepo.find({
-            select: {
-              id: true,
-              url: true,
-            },
-            where: {
-              review_id: review.review_id,
-            },
-          })
-        )
-      ).then((photos) => {
-        results.results = data.map((review, i) => ({ ...review, photos: photos[i] }));
-        res.send(results);
-      })
-    );
+  return AppDataSource.manager.query(getReviewQuery).then((data) => {
+    results.results = data.map((review: { row_to_json: Review }) => {
+      if (!review.row_to_json.photos) review.row_to_json.photos = [];
+      review.row_to_json.date += "T00:00:00.000Z";
+      return review.row_to_json;
+    });
+    return res.send(results);
+  });
 };
 
 export const getReviewMetadata = (req: Request, res: Response) => {
