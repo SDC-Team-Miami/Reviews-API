@@ -5,13 +5,15 @@ import Characteristic from "./entity/Characteristic";
 import Photo from "./entity/Photo";
 import Review from "./entity/Review";
 
+const { host, port, username, password, database } = process.env;
+
 const AppDataSource = new DataSource({
   type: "postgres",
-  host: "localhost",
-  port: 5432,
-  username: "matt",
-  password: "306366",
-  database: "sdc",
+  host,
+  port: Number(port),
+  username,
+  password,
+  database,
   synchronize: false,
   logging: [],
   entities: [Photo, Review, CharacteristicReview, Characteristic],
@@ -20,7 +22,6 @@ const AppDataSource = new DataSource({
   maxQueryExecutionTime: 50,
   cache: true,
 });
-
 export const reviewRepo = AppDataSource.getRepository(Review);
 export const photoRepo = AppDataSource.getRepository(Photo);
 export const characteristicReviewRepo = AppDataSource.getRepository(CharacteristicReview);

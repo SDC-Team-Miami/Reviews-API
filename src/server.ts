@@ -19,7 +19,7 @@ app.use(router);
 AppDataSource.initialize()
   .then(async () => {
     app.listen(process.env.PORT, () => {
-      console.log(`listening on ${process.env.PORT}`);
+      console.log(`listening on ${process.env.SERVERPORT}`);
     });
   })
   .catch((error) => console.log(error));
