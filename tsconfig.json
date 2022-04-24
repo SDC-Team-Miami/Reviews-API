@@ -13,5 +13,7 @@
     "noImplicitAny": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true
-  }
+  },
+  "include": ["./src"],
+  "exclude": ["./artillery"]
 }
