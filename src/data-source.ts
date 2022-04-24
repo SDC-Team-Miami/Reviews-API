@@ -13,11 +13,16 @@ const AppDataSource = new DataSource({
   password: "306366",
   database: "sdc",
   synchronize: false,
-  logging: ["query"],
+  logging: [],
   entities: [Photo, Review, CharacteristicReview, Characteristic],
   migrations: [],
   subscribers: [],
   maxQueryExecutionTime: 50,
+  cache: true,
 });
+
+export const reviewRepo = AppDataSource.getRepository(Review);
+export const photoRepo = AppDataSource.getRepository(Photo);
+export const characteristicReviewRepo = AppDataSource.getRepository(CharacteristicReview);
 
 export default AppDataSource;
