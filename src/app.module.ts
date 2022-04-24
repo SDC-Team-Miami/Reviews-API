@@ -1,11 +1,24 @@
 import { Module } from "@nestjs/common";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import Characteristic from "./reviews/entities/Characteristic";
+import CharacteristicReviews from "./reviews/entities/CharacteristicReview";
+import Photo from "./reviews/entities/Photo";
+import Review from "./reviews/entities/Review";
 import { ReviewsModule } from "./reviews/reviews.module";
 
 @Module({
-  imports: [ReviewsModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ReviewsModule,
+    TypeOrmModule.forRoot({
+      type: "postgres",
+      host: "localhost",
+      port: 5432,
+      username: "matt",
+      password: "306366",
+      database: "sdc",
+      entities: [Review, Photo, Characteristic, CharacteristicReviews],
+      synchronize: false,
+    }),
+  ],
 })
 export class AppModule {}
