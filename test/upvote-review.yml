@@ -1,0 +1,23 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: Warm up
+    - duration: 60
+      arrivalRate: 5
+      rampTo: 500
+      name: Ramp up load
+    - duration: 120
+      arrivalRate: 500
+      name: Heavy
+  processor: "./processor.js"
+
+scenarios:
+  - name: "increment helpfulness of review"
+    flow:
+      - put:
+          beforeRequest: randomReviewId
+          url: "/reviews/helpful"
+          qs:
+            review_id: "{{ reviewId }}"

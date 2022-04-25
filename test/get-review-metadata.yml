@@ -6,24 +6,18 @@ config:
       name: Warm up
     - duration: 60
       arrivalRate: 5
-      rampTo: 50
+      rampTo: 500
       name: Ramp up load
     - duration: 120
-      arrivalRate: 50
+      arrivalRate: 500
       name: Heavy
   processor: "./processor.js"
 
 scenarios:
-  - name: "read and upvote review"
+  - name: "get review metadata"
     flow:
       - get:
           beforeRequest: randomProductId
-          url: "/reviews"
+          url: "/reviews/meta"
           qs:
             product_id: "{{ productId }}"
-      - think: 3
-      - put:
-          beforeRequest: randomReviewId
-          url: "/reviews/helpful"
-          qs:
-            review_id: "{{ reviewId }}"
