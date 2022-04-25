@@ -20,7 +20,7 @@ export class ReviewsService {
   ) {}
 
   getReviews(req: Request, res: Response) {
-    if (req.query.product_id === undefined) return res.sendStatus(404);
+    if (!req.query.product_id) return res.sendStatus(404);
 
     const results: {
       product: string;
@@ -34,16 +34,16 @@ export class ReviewsService {
       results: [],
     };
 
-    return this.reviewRepo.query(getReviewQuery).then((data) => {
-      results.results = data.map((review: { row_to_json: ReviewType }) => {
-        if (!review.row_to_json.photos) review.row_to_json.photos = [];
-        review.row_to_json.date += "T00:00:00.000Z";
-        return review.row_to_json;
+    return this.reviewRepo
+      .query(
+        `SELECT id AS review_id,rating,summary,recommend,response,body,date,reviewer_name,helpfulness,photos FROM review WHERE product_id = ${results.product} AND reported = false`,
+      )
+      .then((data) => {
+        results.results = data;
+        return res.send(results);
       });
-      return res.send(results);
-    });
   }
-  //TODO: update review type
+
   postReview(req: Request, res: Response) {
     if (req.params.product_id === undefined) return res.sendStatus(404);
     const {
