@@ -16,13 +16,18 @@ export class ReviewsService {
     @InjectRepository(Photo)
     private photoRepo: Repository<Photo>,
     @InjectRepository(CharacteristicReview)
-    private characteristicReviewRepo: Repository<CharacteristicReview>
+    private characteristicReviewRepo: Repository<CharacteristicReview>,
   ) {}
 
   getReviews(req: Request, res: Response) {
     if (req.query.product_id === undefined) return res.sendStatus(404);
 
-    const results: { product: string; page: number; count: number; results: Review[] } = {
+    const results: {
+      product: string;
+      page: number;
+      count: number;
+      results: Review[];
+    } = {
       product: req.query.product_id.toString(),
       page: Number(req.query.page) || 1,
       count: Number(req.query.count) || 5,
@@ -41,7 +46,16 @@ export class ReviewsService {
   //TODO: update review type
   postReview(req: Request, res: Response) {
     if (req.params.product_id === undefined) return res.sendStatus(404);
-    const { rating, summary, body, recommend, name, email, photos, characteristics } = req.body;
+    const {
+      rating,
+      summary,
+      body,
+      recommend,
+      name,
+      email,
+      photos,
+      characteristics,
+    } = req.body;
     return this.reviewRepo
       .insert({
         product_id: Number(req.params.product_id),
@@ -62,8 +76,8 @@ export class ReviewsService {
             this.photoRepo.insert({
               review_id: review.generatedMaps[0].id,
               url,
-            })
-          )
+            }),
+          ),
         )
           .then(() =>
             Promise.all(
@@ -72,11 +86,11 @@ export class ReviewsService {
                   characteristic_id: Number(charId),
                   review_id: review.generatedMaps[0].id,
                   value: characteristics[charId],
-                })
-              )
-            )
+                }),
+              ),
+            ),
           )
-          .then(() => res.sendStatus(201))
+          .then(() => res.sendStatus(201)),
       );
   }
 
@@ -115,7 +129,7 @@ export class ReviewsService {
               acc[current] += 1;
               return acc;
             },
-            { true: 0, false: 0 }
+            { true: 0, false: 0 },
           );
         return Promise.all(
           data.map((review) =>
@@ -124,23 +138,26 @@ export class ReviewsService {
             FROM characteristic_review
             INNER JOIN characteristic 
             ON characteristic.id = characteristic_id
-            WHERE review_id = ${review.id};`
-            )
-          )
+            WHERE review_id = ${review.id};`,
+            ),
+          ),
         ).then((result) => {
           const characteristicTotals = result.reduce((acc, chars) => {
-            chars.forEach((char: { id: number; name: string; value: string }) => {
-              if (acc[char.name] === undefined) {
-                acc[char.name] = { id: char.id, value: char.value };
-              } else {
-                acc[char.name].value += char.value;
-              }
-            });
+            chars.forEach(
+              (char: { id: number; name: string; value: string }) => {
+                if (acc[char.name] === undefined) {
+                  acc[char.name] = { id: char.id, value: char.value };
+                } else {
+                  acc[char.name].value += char.value;
+                }
+              },
+            );
             return acc;
           }, {});
           Object.keys(characteristicTotals).forEach((char) => {
             characteristicTotals[char].value /= result.length;
-            characteristicTotals[char].value = characteristicTotals[char].value.toFixed(4);
+            characteristicTotals[char].value =
+              characteristicTotals[char].value.toFixed(4);
           });
           metadata.characteristics = characteristicTotals;
           res.status(200).send(metadata);

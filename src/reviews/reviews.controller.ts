@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Put, Query, Req, Res } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Query,
+  Req,
+  Res,
+} from "@nestjs/common";
 import { Request, Response } from "express";
 import { ReviewsService } from "./reviews.service";
 
@@ -16,7 +25,10 @@ export class ReviewsController {
     return this.addReview(req, res);
   }
   @Get("meta")
-  async getReviewMetadata(@Query("product_id") productId: string, @Res() res: Response) {
+  async getReviewMetadata(
+    @Query("product_id") productId: string,
+    @Res() res: Response,
+  ) {
     return this.reviewsService.getReviewMetadata(productId, res);
   }
   @Put("helpful")
