@@ -1,20 +1,9 @@
-export type Photo = {
-  id: number;
-  url: string;
-};
-
-export type ReviewType = {
-  review_id: string;
-  rating: string;
-  summary: string;
-  recommend: string;
-  response: string;
-  body: string;
-  date: string;
-  reviewer_name: string;
-  helpfulness: number;
-  photos: Photo[] | null;
-};
+///////////////////////////////// Metadata
+export interface IMetadata {
+  ratings: Record<string, number>;
+  recommended: IRecommended;
+  characteristics: Characteristics;
+}
 
 export type Characteristic = {
   id: number;
@@ -30,24 +19,24 @@ export type Characteristics = {
   Width?: Characteristic;
 };
 
-export interface IMetadata {
-  ratings: Record<string, number>;
-  recommended: IRecommended;
-  characteristics: Characteristics;
-}
+///////////////////////////////// Recommended
 export interface IRecommended {
   false: number;
   true: number;
 }
+
+///////////////////////////////// Request
 export interface IRequest {
   query?: IQuery;
   body?: IBody;
 }
+
 export interface IQuery {
   product_id: string;
   page?: string;
   count?: string;
 }
+
 export interface IBody {
   rating?: number;
   summary?: string;

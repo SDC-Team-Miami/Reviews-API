@@ -8,16 +8,16 @@ config:
       arrivalRate: 5
       rampTo: 500
       name: Ramp up load
-    - duration: 120
-      arrivalRate: 500
-      name: Heavy
-  processor: "./processor.js"
+    - duration: 10 # how long the test runs for
+      arrivalRate: 500 # how many requests per second
+      name: Heavy # name of the phase
+  processor: "./processor.js" # import a javascript function
 
 scenarios:
   - name: "get review"
     flow:
       - get:
-          beforeRequest: randomProductId
-          url: "/reviews"
-          qs:
-            product_id: "{{ productId }}"
+          beforeRequest: randomProductId # we're goin to run this imported js function before each request
+          url: "/reviews" # GET /reviews
+          qs: # query string
+            product_id: "{{ productId }}" # product_id=productId

@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Review } from "./entities/review.entity";
-import { Photo } from "./entities/photo.entity";
 import { IMetadata, IRecommended, IRequest } from "src/types";
 import { CharacteristicReview } from "./entities/characteristicReview.entity";
 import { FastifyReply } from "fastify";
@@ -12,8 +11,6 @@ export class ReviewsService {
   constructor(
     @InjectRepository(Review)
     private reviewRepo: Repository<Review>,
-    @InjectRepository(Photo)
-    private photoRepo: Repository<Photo>,
     @InjectRepository(CharacteristicReview)
     private characteristicReviewRepo: Repository<CharacteristicReview>,
   ) {}
