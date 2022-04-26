@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index, Timestamp } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  Index,
+  Timestamp,
+} from "typeorm";
 
 @Entity()
 export class Review {
@@ -12,11 +18,6 @@ export class Review {
 
   @Column()
   rating: number;
-
-  @Column({
-    nullable: true,
-  })
-  date: string;
 
   @Column()
   summary: string;
@@ -45,5 +46,11 @@ export class Review {
   helpfulness: number;
 
   @Column("timestamp")
-  datetz: Timestamp;
+  date: Timestamp;
+
+  @Column({
+    type: "varchar",
+    array: true,
+  })
+  photos: string;
 }

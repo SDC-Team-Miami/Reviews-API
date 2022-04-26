@@ -16,12 +16,6 @@ export type ReviewType = {
   photos: Photo[] | null;
 };
 
-export type Ratings = Record<string, number>;
-
-export type Recommended = {
-  [bool in "true" | "false"]: number;
-};
-
 export type Characteristic = {
   id: number;
   value: string;
@@ -36,8 +30,31 @@ export type Characteristics = {
   Width?: Characteristic;
 };
 
-export interface Metadata {
-  ratings: Ratings;
-  recommended: Recommended;
+export interface IMetadata {
+  ratings: Record<string, number>;
+  recommended: IRecommended;
   characteristics: Characteristics;
+}
+export interface IRecommended {
+  false: number;
+  true: number;
+}
+export interface IRequest {
+  query?: IQuery;
+  body?: IBody;
+}
+export interface IQuery {
+  product_id: string;
+  page?: string;
+  count?: string;
+}
+export interface IBody {
+  rating?: number;
+  summary?: string;
+  body?: string;
+  recommend?: boolean;
+  name?: string;
+  email?: string;
+  photos?: string;
+  characteristics: Record<string, number>;
 }
