@@ -33,3 +33,10 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# environment variables
+*.env
+
+# artillery test files
+test/test.json
+test/test.json.html
