@@ -1,3 +1,4 @@
+import "newrelic";
 import "dotenv/config";
 import { NestFactory } from "@nestjs/core";
 import {
