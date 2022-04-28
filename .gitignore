@@ -34,6 +34,9 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# environment variables
 *.env
 
-/newrelic.js
+# artillery test files
+test/test.json
+test/test.json.html
