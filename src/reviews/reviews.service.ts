@@ -5,6 +5,7 @@ import { Review } from "./entities/review.entity";
 import { IMetadata, IRecommended, IRequest } from "src/types";
 import { CharacteristicReview } from "./entities/characteristicReview.entity";
 import { FastifyReply } from "fastify";
+import { getReviewQuery } from "src/rawQueries";
 
 @Injectable({})
 export class ReviewsService {
@@ -31,50 +32,38 @@ export class ReviewsService {
     };
 
     return this.reviewRepo
-      .query(
-        `SELECT id AS review_id,rating,summary,recommend,response,body,date,reviewer_name,helpfulness,photos FROM review WHERE product_id = ${results.product} AND reported = false`,
-      )
-      .then((data) => {
-        results.results = data;
+      .query(getReviewQuery(results.product))
+      .then((reviewData) => {
+        results.results = reviewData;
         return reply.send(results);
       });
   }
 
   postReview(req: IRequest, reply: FastifyReply) {
     if (req.query.product_id === undefined) return reply.code(404);
-    const {
-      rating,
-      summary,
-      body,
-      recommend,
-      name,
-      email,
-      photos,
-      characteristics,
-    } = req.body;
 
     return this.reviewRepo
       .insert({
         product_id: Number(req.query.product_id),
-        rating,
-        summary,
-        body,
-        recommend,
+        rating: req.body.rating,
+        summary: req.body.summary,
+        body: req.body.body,
+        recommend: req.body.recommend,
         reported: false,
-        reviewer_name: name,
-        reviewer_email: email,
+        reviewer_name: req.body.name,
+        reviewer_email: req.body.email,
         response: null,
         helpfulness: 0,
         date: new Date().toISOString(),
-        photos,
+        photos: req.body.photos,
       })
       .then((review) =>
         Promise.all(
-          Object.keys(characteristics).map((charId: string) =>
+          Object.keys(req.body.characteristics).map((charId: string) =>
             this.characteristicReviewRepo.insert({
               characteristic_id: Number(charId),
               review_id: review.generatedMaps[0].id,
-              value: characteristics[charId],
+              value: req.body.characteristics[charId],
             }),
           ),
         ),
