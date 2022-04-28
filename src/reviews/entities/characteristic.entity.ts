@@ -11,4 +11,10 @@ export class Characteristic {
 
   @Column()
   name: string;
+
+  @Column({
+    type: "integer",
+    array: true,
+  })
+  values: string;
 }
