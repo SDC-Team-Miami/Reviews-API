@@ -11,6 +11,12 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
-  await app.listen(3000);
+  await app.listen(3000, "0.0.0.0", (err, address) => {
+    if (err) {
+      console.log(err);
+      process.exit(1);
+    }
+    console.log("listening on ", address);
+  });
 }
 bootstrap();

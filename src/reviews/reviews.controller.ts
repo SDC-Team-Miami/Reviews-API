@@ -7,6 +7,11 @@ import { ReviewsService } from "./reviews.service";
 export class ReviewsController {
   constructor(private reviewsService: ReviewsService) {}
 
+  @Get("test")
+  async test() {
+    return "hello";
+  }
+
   @Get()
   async getReviews(@Req() req: IRequest, @Res() reply: FastifyReply) {
     return this.reviewsService.getReviews(req, reply);
